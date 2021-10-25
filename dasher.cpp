@@ -23,11 +23,17 @@ int main()
     scarfy_pos.x = width/2 - scarfy_rec.width/2;
     scarfy_pos.y = height - scarfy_rec.height;
 
+    // Animation params
+    int frame{0};
+    const float updateTime{1.0f / 12.0f};
+    float runningTime{0};
+
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
         // time since last frame
         dT = GetFrameTime();
+        runningTime += dT;
 
         // Gravity and Ground check
         if (scarfy_pos.y + scarfy_rec.height < height) 
@@ -47,6 +53,14 @@ int main()
         
         // Location
         scarfy_pos.y += velocity * dT;
+
+        // Update scarfy frames
+        if (runningTime >= updateTime)
+        {
+            runningTime = 0.0f;
+            if (frame++ > 5) {frame = 0;}
+            scarfy_rec.x = frame * scarfy_rec.width;
+        }
 
         BeginDrawing();
         ClearBackground(WHITE);
