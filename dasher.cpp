@@ -6,10 +6,11 @@ int main()
     const int width{800}, height{800};
     InitWindow(width, height, "Dapper Dasher");
     // World params
-    const int gravity{1};
+    const int gravity{1'000};
     int velocity{0};
     bool isInAir{false};
-    const int j_velocity{20};
+    const int j_velocity{600};
+    float dT;
 
     // Scarfy sprite
     Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
@@ -25,11 +26,14 @@ int main()
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
+        // time since last frame
+        dT = GetFrameTime();
+
         // Gravity and Ground check
         if (scarfy_pos.y + scarfy_rec.height < height) 
         {
             isInAir = true;
-            velocity += gravity;
+            velocity += gravity * dT;
         } 
         else 
         {
@@ -37,10 +41,12 @@ int main()
             velocity = 0;
             scarfy_pos.y = height - scarfy_rec.height;
         }
+
         // Jump 
         if (IsKeyPressed(KEY_SPACE) && !isInAir) {velocity -=j_velocity;}
+        
         // Location
-        scarfy_pos.y += velocity;
+        scarfy_pos.y += velocity * dT;
 
         BeginDrawing();
         ClearBackground(WHITE);
