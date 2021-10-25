@@ -3,23 +3,30 @@
 int main()
 {
     // Window dimensions
-    const int width{800}, height{400};
+    const int width{800}, height{800};
     InitWindow(width, height, "Dapper Dasher");
     // World params
     const int gravity{1};
     int velocity{0};
-    // Rectangle params
-    const int r_width{50}, r_height{50};
-    const Color r_color{BLUE};
-    int posX{width/2}, posY{height/2};
     bool isInAir{false};
-    const int j_velocity{25};
+    const int j_velocity{20};
+
+    // Scarfy sprite
+    Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
+    Rectangle scarfy_rec;
+    scarfy_rec.width = scarfy_tex.width/6;
+    scarfy_rec.height = scarfy_tex.height;
+    scarfy_rec.x = 0;
+    scarfy_rec.y = 0;
+    Vector2 scarfy_pos;
+    scarfy_pos.x = width/2 - scarfy_rec.width/2;
+    scarfy_pos.y = height - scarfy_rec.height;
 
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
         // Gravity and Ground check
-        if (posY + r_height < height) 
+        if (scarfy_pos.y + scarfy_rec.height < height) 
         {
             isInAir = true;
             velocity += gravity;
@@ -28,17 +35,18 @@ int main()
         {
             isInAir = false;
             velocity = 0;
-            posY = height - r_height;
+            scarfy_pos.y = height - scarfy_rec.height;
         }
         // Jump 
         if (IsKeyPressed(KEY_SPACE) && !isInAir) {velocity -=j_velocity;}
         // Location
-        posY += velocity;
+        scarfy_pos.y += velocity;
 
         BeginDrawing();
         ClearBackground(WHITE);
-        DrawRectangle(posX, posY, r_width, r_height, r_color);
+        DrawTextureRec(scarfy_tex, scarfy_rec, scarfy_pos, WHITE);
         EndDrawing();
     }
+    UnloadTexture(scarfy_tex);
     CloseWindow();
 }
