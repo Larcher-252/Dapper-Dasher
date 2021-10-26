@@ -24,9 +24,28 @@ int main()
     // Hazard sprite params
     Texture2D neb_tex = LoadTexture("textures/12_nebula_spritesheet.png");
     const int n_velocity{-600};
+    // First nebula
+    AnimData nebData
+    {
+        {neb_tex.width/8, neb_tex.height/8, 0.0f, 0.0f},    // Rectangle rec
+        {width, height - neb_tex.height/8},                 // Vector2 pos
+        0.0f,                                               // int frame
+        1.0f/12.0f,                                         // float updTime
+        0.0f                                                // float runTime
+    };
+    // Second nebula
+    AnimData nebData
+    {
+        {neb_tex.width/8, neb_tex.height/8, 0.0f, 0.0f},    // Rectangle rec
+        {width + 300, height - neb_tex.height/8},           // Vector2 pos
+        0.0f,                                               // int frame
+        1.0f/16.0f,                                         // float updTime
+        0.0f                                                // float runTime
+    };
+
     // First
     Rectangle neb_rec;
-    neb_rec.width = neb_tex.height/8;
+    neb_rec.width = neb_tex.width/8;
     neb_rec.height = neb_tex.height/8;
     neb_rec.x = 0;
     neb_rec.y = 0;
@@ -54,20 +73,17 @@ int main()
 
     // Scarfy sprite params
     Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
-    AnimData scarfyData;
-    scarfyData.rec.width = scarfy_tex.width/6;
-    scarfyData.rec.height = scarfy_tex.height;
-    scarfyData.rec.x = 0;
-    scarfyData.rec.y = 0;
-    scarfyData.pos.x = width/2 - scarfyData.rec.width/2;
-    scarfyData.pos.y = height - scarfyData.rec.height;
-    scarfyData.frame = 0;
-    scarfyData.updTime = 1.0f / 12.0f;
-    scarfyData.runTime = 0;
-
     int velocity{0};
     bool isInAir{false};
     const int j_velocity{600};
+    AnimData scarfyData
+    {
+        {neb_tex.width/6, neb_tex.height, 0.0f, 0.0f},          // Rectangle rec
+        {width/2 - neb_tex.width/12, height - neb_tex.height},  // Vector2 pos
+        0.0f,                                                   // int frame
+        1.0f/12.0f,                                             // float updTime
+        0.0f                                                    // float runTime
+    };
 
     SetTargetFPS(60);
     while (!WindowShouldClose())
