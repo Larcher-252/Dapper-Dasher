@@ -7,15 +7,19 @@ int main()
     InitWindow(width, height, "Dapper Dasher");
     // World params
     const int gravity{1'000};
-    int velocity{0};
-    bool isInAir{false};
-    const int j_velocity{600};
     float dT;
 
     // Hazard sprite params
-    Texture2D hazard_tex = LoadTexture("textures/12_nebula_spritesheet");
-    Rectangle hazard_rec;
-    Vector2 hazard_pos;
+    Texture2D neb_tex = LoadTexture("textures/12_nebula_spritesheet.png");
+    Rectangle neb_rec;
+    neb_rec.width = neb_tex.height/8;
+    neb_rec.height = neb_tex.height/8;
+    neb_rec.x = 0;
+    neb_rec.y = 0;
+    Vector2 neb_pos;
+    neb_pos.x = width;
+    neb_pos.y = height - neb_rec.height;
+    const int n_velocity{-600};
 
     // Scarfy sprite params
     Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
@@ -27,6 +31,9 @@ int main()
     Vector2 scarfy_pos;
     scarfy_pos.x = width/2 - scarfy_rec.width/2;
     scarfy_pos.y = height - scarfy_rec.height;
+    int velocity{0};
+    bool isInAir{false};
+    const int j_velocity{600};
 
     // Animation params
     int frame{0};
@@ -38,7 +45,6 @@ int main()
     {
         // time since last frame
         dT = GetFrameTime();
-        runningTime += dT;
 
         // Gravity and Ground check
         if (scarfy_pos.y + scarfy_rec.height < height) 
@@ -57,21 +63,28 @@ int main()
         if (IsKeyPressed(KEY_SPACE) && !isInAir) {velocity -=j_velocity;}
         
         // Location
+        neb_pos.x += n_velocity * dT;
         scarfy_pos.y += velocity * dT;
 
         // Update scarfy frames
-        if (runningTime >= updateTime)
+        if (!isInAir)
         {
-            runningTime = 0.0f;
-            if (frame++ > 5) {frame = 0;}
-            scarfy_rec.x = frame * scarfy_rec.width;
+            runningTime += dT;
+            if (runningTime >= updateTime)
+            {
+                runningTime = 0.0f;
+                if (frame++ > 5) {frame = 0;}
+                scarfy_rec.x = frame * scarfy_rec.width;
+            }
         }
 
         BeginDrawing();
         ClearBackground(WHITE);
+        DrawTextureRec(neb_tex, neb_rec, neb_pos, WHITE);
         DrawTextureRec(scarfy_tex, scarfy_rec, scarfy_pos, WHITE);
         EndDrawing();
     }
+    UnloadTexture(neb_tex);
     UnloadTexture(scarfy_tex);
     CloseWindow();
 }
