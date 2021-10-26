@@ -25,8 +25,7 @@ int main()
     Texture2D neb_tex = LoadTexture("textures/12_nebula_spritesheet.png");
     const int n_velocity{-600};
     // First nebula
-    AnimData nebData
-    {
+    AnimData neb1Data{
         {neb_tex.width/8, neb_tex.height/8, 0.0f, 0.0f},    // Rectangle rec
         {width, height - neb_tex.height/8},                 // Vector2 pos
         0.0f,                                               // int frame
@@ -34,8 +33,7 @@ int main()
         0.0f                                                // float runTime
     };
     // Second nebula
-    AnimData nebData
-    {
+    AnimData neb2Data{
         {neb_tex.width/8, neb_tex.height/8, 0.0f, 0.0f},    // Rectangle rec
         {width + 300, height - neb_tex.height/8},           // Vector2 pos
         0.0f,                                               // int frame
@@ -43,41 +41,12 @@ int main()
         0.0f                                                // float runTime
     };
 
-    // First
-    Rectangle neb_rec;
-    neb_rec.width = neb_tex.width/8;
-    neb_rec.height = neb_tex.height/8;
-    neb_rec.x = 0;
-    neb_rec.y = 0;
-    Vector2 neb_pos;
-    neb_pos.x = width;
-    neb_pos.y = height - neb_rec.height;
-    // Animation params
-    int nebFrame{0};
-    const float nebUpdateTime{1.0f/12.0f};
-    float nebRunningTime{0};
-
-    // Second
-    Rectangle neb_rec_2;
-    neb_rec_2.width = neb_tex.height/8;
-    neb_rec_2.height = neb_tex.height/8;
-    neb_rec_2.x = 0;
-    neb_rec_2.y = 0;
-    Vector2 neb_pos_2;
-    neb_pos_2.x = width + 300;
-    neb_pos_2.y = height - neb_rec.height;
-    // Animation params
-    int nebFrame_2{0};
-    const float nebUpdateTime_2{1.0f/16.0f};
-    float nebRunningTime_2{0};
-
     // Scarfy sprite params
     Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
     int velocity{0};
     bool isInAir{false};
     const int j_velocity{600};
-    AnimData scarfyData
-    {
+    AnimData scarfyData{
         {neb_tex.width/6, neb_tex.height, 0.0f, 0.0f},          // Rectangle rec
         {width/2 - neb_tex.width/12, height - neb_tex.height},  // Vector2 pos
         0.0f,                                                   // int frame
@@ -108,8 +77,8 @@ int main()
         if (IsKeyPressed(KEY_SPACE) && !isInAir) {velocity -=j_velocity;}
         
         // Location
-        neb_pos.x += n_velocity * dT;
-        neb_pos_2.x += n_velocity * dT;
+        neb1Data.pos.x += n_velocity * dT;
+        neb2Data.pos.x += n_velocity * dT;
         scarfyData.pos.y += velocity * dT;
 
         // Update scarfy frames
@@ -125,27 +94,27 @@ int main()
         }
 
         // Update nebula frames
-        nebRunningTime += dT;
-        if (nebRunningTime >= nebUpdateTime)
+        neb1Data.runTime += dT;
+        if (neb1Data.runTime >= neb1Data.updTime)
         {
-            nebRunningTime = 0.0f;
-            if (nebFrame++ > 7) {nebFrame = 0;}
-            neb_rec.x = nebFrame * neb_rec.width;
+            neb1Data.runTime = 0.0f;
+            if (neb1Data.frame++ > 7) {neb1Data.frame = 0;}
+            neb1Data.rec.x = neb1Data.frame * neb1Data.rec.width;
         }
 
         // Update second nebula frames
-        nebRunningTime_2 += dT;
-        if (nebRunningTime_2 >= nebUpdateTime_2)
+        neb2Data.runTime += dT;
+        if (neb2Data.runTime >= neb2Data.updTime)
         {
-            nebRunningTime_2 = 0.0f;
-            if (nebFrame_2++ > 7) {nebFrame_2 = 0;}
-            neb_rec_2.x = nebFrame_2 * neb_rec_2.width;
+            neb2Data.runTime = 0.0f;
+            if (neb2Data.frame++ > 7) {neb2Data.frame = 0;}
+            neb2Data.rec.x = neb2Data.frame * neb2Data.rec.width;
         }
 
         BeginDrawing();
         ClearBackground(WHITE);
-        DrawTextureRec(neb_tex, neb_rec, neb_pos, WHITE);
-        DrawTextureRec(neb_tex, neb_rec_2, neb_pos_2, PINK);
+        DrawTextureRec(neb_tex, neb1Data.rec, neb1Data.pos, WHITE);
+        DrawTextureRec(neb_tex, neb2Data.rec, neb2Data.pos, PINK);
         DrawTextureRec(scarfy_tex, scarfyData.rec, scarfyData.pos, WHITE);
         EndDrawing();
     }
