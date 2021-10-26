@@ -11,6 +11,8 @@ int main()
 
     // Hazard sprite params
     Texture2D neb_tex = LoadTexture("textures/12_nebula_spritesheet.png");
+    const int n_velocity{-600};
+    // First
     Rectangle neb_rec;
     neb_rec.width = neb_tex.height/8;
     neb_rec.height = neb_tex.height/8;
@@ -19,11 +21,24 @@ int main()
     Vector2 neb_pos;
     neb_pos.x = width;
     neb_pos.y = height - neb_rec.height;
-    const int n_velocity{-600};
     // Animation params
     int nebFrame{0};
     const float nebUpdateTime{1.0f/12.0f};
     float nebRunningTime{0};
+
+    // Second
+    Rectangle neb_rec_2;
+    neb_rec_2.width = neb_tex.height/8;
+    neb_rec_2.height = neb_tex.height/8;
+    neb_rec_2.x = 0;
+    neb_rec_2.y = 0;
+    Vector2 neb_pos_2;
+    neb_pos_2.x = width + 300;
+    neb_pos_2.y = height - neb_rec.height;
+    // Animation params
+    int nebFrame_2{0};
+    const float nebUpdateTime_2{1.0f/16.0f};
+    float nebRunningTime_2{0};
 
     // Scarfy sprite params
     Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
@@ -67,6 +82,7 @@ int main()
         
         // Location
         neb_pos.x += n_velocity * dT;
+        neb_pos_2.x += n_velocity * dT;
         scarfy_pos.y += velocity * dT;
 
         // Update scarfy frames
@@ -90,9 +106,19 @@ int main()
             neb_rec.x = nebFrame * neb_rec.width;
         }
 
+        // Update second nebula frames
+        nebRunningTime_2 += dT;
+        if (nebRunningTime_2 >= nebUpdateTime_2)
+        {
+            nebRunningTime_2 = 0.0f;
+            if (nebFrame_2++ > 7) {nebFrame_2 = 0;}
+            neb_rec_2.x = nebFrame_2 * neb_rec_2.width;
+        }
+
         BeginDrawing();
         ClearBackground(WHITE);
         DrawTextureRec(neb_tex, neb_rec, neb_pos, WHITE);
+        DrawTextureRec(neb_tex, neb_rec_2, neb_pos_2, PINK);
         DrawTextureRec(scarfy_tex, scarfy_rec, scarfy_pos, WHITE);
         EndDrawing();
     }
