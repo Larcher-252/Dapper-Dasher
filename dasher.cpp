@@ -20,6 +20,10 @@ int main()
     neb_pos.x = width;
     neb_pos.y = height - neb_rec.height;
     const int n_velocity{-600};
+    // Animation params
+    int nebFrame{0};
+    const float nebUpdateTime{1.0f/12.0f};
+    float nebRunningTime{0};
 
     // Scarfy sprite params
     Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
@@ -34,7 +38,6 @@ int main()
     int velocity{0};
     bool isInAir{false};
     const int j_velocity{600};
-
     // Animation params
     int frame{0};
     const float updateTime{1.0f / 12.0f};
@@ -76,6 +79,15 @@ int main()
                 if (frame++ > 5) {frame = 0;}
                 scarfy_rec.x = frame * scarfy_rec.width;
             }
+        }
+
+        // Update nebula frames
+        nebRunningTime += dT;
+        if (nebRunningTime >= nebUpdateTime)
+        {
+            nebRunningTime = 0.0f;
+            if (nebFrame++ > 7) {nebFrame = 0;}
+            neb_rec.x = nebFrame * neb_rec.width;
         }
 
         BeginDrawing();
