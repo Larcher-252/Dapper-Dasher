@@ -1,5 +1,17 @@
 #include "raylib.h"
 
+// Animation data
+struct AnimData
+{
+    // Sprite params
+    Rectangle rec;
+    Vector2 pos;
+    // Animation params
+    int frame;
+    float updTime;
+    float runTime;
+};
+
 int main()
 {
     // Window dimensions
@@ -42,21 +54,20 @@ int main()
 
     // Scarfy sprite params
     Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
-    Rectangle scarfy_rec;
-    scarfy_rec.width = scarfy_tex.width/6;
-    scarfy_rec.height = scarfy_tex.height;
-    scarfy_rec.x = 0;
-    scarfy_rec.y = 0;
-    Vector2 scarfy_pos;
-    scarfy_pos.x = width/2 - scarfy_rec.width/2;
-    scarfy_pos.y = height - scarfy_rec.height;
+    AnimData scarfyData;
+    scarfyData.rec.width = scarfy_tex.width/6;
+    scarfyData.rec.height = scarfy_tex.height;
+    scarfyData.rec.x = 0;
+    scarfyData.rec.y = 0;
+    scarfyData.pos.x = width/2 - scarfyData.rec.width/2;
+    scarfyData.pos.y = height - scarfyData.rec.height;
+    scarfyData.frame = 0;
+    scarfyData.updTime = 1.0f / 12.0f;
+    scarfyData.runTime = 0;
+
     int velocity{0};
     bool isInAir{false};
     const int j_velocity{600};
-    // Animation params
-    int frame{0};
-    const float updateTime{1.0f / 12.0f};
-    float runningTime{0};
 
     SetTargetFPS(60);
     while (!WindowShouldClose())
@@ -65,7 +76,7 @@ int main()
         dT = GetFrameTime();
 
         // Gravity and Ground check
-        if (scarfy_pos.y + scarfy_rec.height < height) 
+        if (scarfyData.pos.y + scarfyData.rec.height < height) 
         {
             isInAir = true;
             velocity += gravity * dT;
@@ -74,7 +85,7 @@ int main()
         {
             isInAir = false;
             velocity = 0;
-            scarfy_pos.y = height - scarfy_rec.height;
+            scarfyData.pos.y = height - scarfyData.rec.height;
         }
 
         // Jump 
@@ -83,17 +94,17 @@ int main()
         // Location
         neb_pos.x += n_velocity * dT;
         neb_pos_2.x += n_velocity * dT;
-        scarfy_pos.y += velocity * dT;
+        scarfyData.pos.y += velocity * dT;
 
         // Update scarfy frames
         if (!isInAir)
         {
-            runningTime += dT;
-            if (runningTime >= updateTime)
+            scarfyData.runTime += dT;
+            if (scarfyData.runTime >= scarfyData.updTime)
             {
-                runningTime = 0.0f;
-                if (frame++ > 5) {frame = 0;}
-                scarfy_rec.x = frame * scarfy_rec.width;
+                scarfyData.runTime = 0.0f;
+                if (scarfyData.frame++ > 5) {scarfyData.frame = 0;}
+                scarfyData.rec.x = scarfyData.frame * scarfyData.rec.width;
             }
         }
 
@@ -119,7 +130,7 @@ int main()
         ClearBackground(WHITE);
         DrawTextureRec(neb_tex, neb_rec, neb_pos, WHITE);
         DrawTextureRec(neb_tex, neb_rec_2, neb_pos_2, PINK);
-        DrawTextureRec(scarfy_tex, scarfy_rec, scarfy_pos, WHITE);
+        DrawTextureRec(scarfy_tex, scarfyData.rec, scarfyData.pos, WHITE);
         EndDrawing();
     }
     UnloadTexture(neb_tex);
