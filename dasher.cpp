@@ -12,7 +12,12 @@ int main()
     const int j_velocity{600};
     float dT;
 
-    // Scarfy sprite
+    // Hazard sprite params
+    Texture2D hazard_tex = LoadTexture("textures/12_nebula_spritesheet");
+    Rectangle hazard_rec;
+    Vector2 hazard_pos;
+
+    // Scarfy sprite params
     Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
     Rectangle scarfy_rec;
     scarfy_rec.width = scarfy_tex.width/6;
