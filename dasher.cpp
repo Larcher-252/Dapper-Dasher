@@ -15,8 +15,10 @@ struct AnimData
 int main()
 {
     // Window dimensions
-    const int width{800}, height{800};
-    InitWindow(width, height, "Dapper Dasher");
+    int windowDimension[2];
+    windowDimension[0] = 512;
+    windowDimension[1] = 380;
+    InitWindow(windowDimension[0], windowDimension[1], "Dapper Dasher");
     // World params
     const int gravity{1'000};
     float dT;
@@ -26,19 +28,19 @@ int main()
     const int n_velocity{-400};
     // First nebula
     AnimData neb1Data{
-        {0.0f, 0.0f, neb_tex.width/8, neb_tex.height/8},    // Rectangle rec
-        {width, height - neb_tex.height/8},                 // Vector2 pos
-        0,                                                  // int frame
-        1.0f/12.0f,                                         // float updTime
-        0.0f                                                // float runTime
+        {0.0f, 0.0f, neb_tex.width/8, neb_tex.height/8},                // Rectangle rec
+        {windowDimension[0], windowDimension[1] - neb_tex.height/8},    // Vector2 pos
+        0,                                                              // int frame
+        1.0f/12.0f,                                                     // float updTime
+        0.0f                                                            // float runTime
     };
     // Second nebula
     AnimData neb2Data{
-        {0.0f, 0.0f, neb_tex.width/8, neb_tex.height/8},    // Rectangle rec
-        {width + 300, height - neb_tex.height/8},           // Vector2 pos
-        0,                                                  // int frame
-        1.0f/16.0f,                                         // float updTime
-        0.0f                                                // float runTime
+        {0.0f, 0.0f, neb_tex.width/8, neb_tex.height/8},                    // Rectangle rec
+        {windowDimension[0] + 300, windowDimension[1] - neb_tex.height/8},  // Vector2 pos
+        0,                                                                  // int frame
+        1.0f/16.0f,                                                         // float updTime
+        0.0f                                                                // float runTime
     };
 
     // Scarfy sprite params
@@ -47,11 +49,11 @@ int main()
     bool isInAir{false};
     const int j_velocity{600};
     AnimData scarfyData{
-        {0.0f, 0.0f, scarfy_tex.width/6, scarfy_tex.height},          // Rectangle rec
-        {width/2 - scarfy_tex.width/12, height - scarfy_tex.height},  // Vector2 pos
-        0,                                                      // int frame
-        1.0f/12.0f,                                             // float updTime
-        0.0f                                                    // float runTime
+        {0.0f, 0.0f, scarfy_tex.width/6, scarfy_tex.height},                                    // Rectangle rec
+        {windowDimension[0]/2 - scarfy_tex.width/12, windowDimension[1] - scarfy_tex.height},   // Vector2 pos
+        0,                                                                                      // int frame
+        1.0f/12.0f,                                                                             // float updTime
+        0.0f                                                                                    // float runTime
     };
 
     SetTargetFPS(60);
@@ -61,7 +63,7 @@ int main()
         dT = GetFrameTime();
 
         // Gravity and Ground check
-        if (scarfyData.pos.y + scarfyData.rec.height < height) 
+        if (scarfyData.pos.y + scarfyData.rec.height < windowDimension[1]) 
         {
             isInAir = true;
             velocity += gravity * dT;
@@ -70,7 +72,7 @@ int main()
         {
             isInAir = false;
             velocity = 0;
-            scarfyData.pos.y = height - scarfyData.rec.height;
+            scarfyData.pos.y = windowDimension[1] - scarfyData.rec.height;
         }
 
         // Jump 
