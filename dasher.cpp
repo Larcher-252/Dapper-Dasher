@@ -37,9 +37,6 @@ int main()
     windowDimension[0] = 512;
     windowDimension[1] = 380;
     InitWindow(windowDimension[0], windowDimension[1], "Dapper Dasher");
-    // World params
-    const int gravity{1'000};
-    float dT;
 
     // Background
     Texture2D background = LoadTexture("textures/far-buildings.png");
@@ -95,6 +92,11 @@ int main()
         0.0f                                                                                    // float runTime
     };
 
+    // World params
+    const int gravity{1'000};
+    float dT;
+    float finishLine{nebulae[nebulaCount - 1].pos.x + 100};
+
     SetTargetFPS(60);
     while (!WindowShouldClose())
     {
@@ -143,6 +145,7 @@ int main()
             nebulae[i].pos.x += n_velocity * dT;
         }
         scarfyData.pos.y += velocity * dT;
+        finishLine += n_velocity * dT;
 
         BeginDrawing();
         ClearBackground(WHITE);
