@@ -12,6 +12,11 @@ struct AnimData
     float runTime;
 };
 
+bool isOnGround (AnimData data, int height)
+{
+    return data.pos.y + data.rec.height >= height;
+}
+
 int main()
 {
     // Window dimensions
@@ -47,7 +52,6 @@ int main()
     // Scarfy sprite params
     Texture2D scarfy_tex = LoadTexture("textures/scarfy.png");
     int velocity{0};
-    bool isInAir{false};
     const int j_velocity{600};
     AnimData scarfyData{
         {0.0f, 0.0f, scarfy_tex.width/6, scarfy_tex.height},                                    // Rectangle rec
@@ -64,23 +68,21 @@ int main()
         dT = GetFrameTime();
 
         // Gravity and Ground check
-        if (scarfyData.pos.y + scarfyData.rec.height < windowDimension[1]) 
+        if (isOnGround(scarfyData, windowDimension[1])) 
         {
-            isInAir = true;
-            velocity += gravity * dT;
+            velocity = 0;
+            scarfyData.pos.y = windowDimension[1] - scarfyData.rec.height;
         } 
         else 
         {
-            isInAir = false;
-            velocity = 0;
-            scarfyData.pos.y = windowDimension[1] - scarfyData.rec.height;
+            velocity += gravity * dT;
         }
 
         // Jump 
-        if (IsKeyPressed(KEY_SPACE) && !isInAir) {velocity -=j_velocity;}
+        if (IsKeyPressed(KEY_SPACE) && isOnGround(scarfyData, windowDimension[1])) {velocity -=j_velocity;}
 
         // Update scarfy frames
-        if (!isInAir)
+        if (isOnGround(scarfyData, windowDimension[1]))
         {
             scarfyData.runTime += dT;
             if (scarfyData.runTime >= scarfyData.updTime)
