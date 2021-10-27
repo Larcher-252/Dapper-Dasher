@@ -42,11 +42,23 @@ int main()
     float dT;
 
     // Background
-    Texture2D background1 = LoadTexture("textures/far-buildings.png");
-    Vector2 bg1_pos{0.0f, 0.0f};
-    const float bg1_rotation{0}, bg1_scale{2};
-    Vector2 bg1_pos_2{bg1_pos.x + background1.width * bg1_scale, 0.0f};
-    const int bg1_velocity = -20;
+    Texture2D background = LoadTexture("textures/far-buildings.png");
+    Vector2 bg_pos{0.0f, 0.0f};
+    const float bg_rotation{0}, bg_scale{2};
+    Vector2 bg_pos_2{bg_pos.x + background.width * bg_scale, 0.0f};
+    const int bg_velocity = -20;
+
+    Texture2D midground = LoadTexture("textures/back-buildings.png");
+    Vector2 mg_pos{0.0f, 0.0f};
+    const float mg_rotation{0}, mg_scale{2};
+    Vector2 mg_pos_2{mg_pos.x + midground.width * mg_scale, 0.0f};
+    const int mg_velocity = -40;
+
+    Texture2D foreground = LoadTexture("textures/foreground.png");
+    Vector2 fg_pos{0.0f, 0.0f};
+    const float fg_rotation{0}, fg_scale{2};
+    Vector2 fg_pos_2{fg_pos.x + foreground.width * fg_scale, 0.0f};
+    const int fg_velocity = -80;
 
     // Hazard sprite params
     Texture2D neb_tex = LoadTexture("textures/12_nebula_spritesheet.png");
@@ -116,8 +128,16 @@ int main()
         }
 
         // Location
-        bg1_pos.x += bg1_velocity * dT;
-        bg1_pos_2.x = bg1_pos.x + background1.width * bg1_scale;
+        bg_pos.x += bg_velocity * dT;
+        if (bg_pos.x <= -background.width * bg_scale) {bg_pos.x = 0;}
+        bg_pos_2.x = bg_pos.x + background.width * bg_scale;
+        mg_pos.x += mg_velocity * dT;
+        if (mg_pos.x <= -midground.width * mg_scale) {mg_pos.x = 0;}
+        mg_pos_2.x = mg_pos.x + midground.width * mg_scale;
+        fg_pos.x += fg_velocity * dT;
+        if (fg_pos.x <= -foreground.width * fg_scale) {fg_pos.x = 0;}
+        fg_pos_2.x = fg_pos.x + foreground.width * fg_scale;
+
         for (int i = 0; i < nebulaCount; i++)
         {
             nebulae[i].pos.x += n_velocity * dT;
@@ -126,8 +146,12 @@ int main()
 
         BeginDrawing();
         ClearBackground(WHITE);
-        DrawTextureEx(background1, bg1_pos, bg1_rotation, bg1_scale, WHITE);
-        DrawTextureEx(background1, bg1_pos_2, bg1_rotation, bg1_scale, WHITE);
+        DrawTextureEx(background, bg_pos, bg_rotation, bg_scale, WHITE);
+        DrawTextureEx(background, bg_pos_2, bg_rotation, bg_scale, WHITE);
+        DrawTextureEx(midground, mg_pos, mg_rotation, mg_scale, WHITE);
+        DrawTextureEx(midground, mg_pos_2, mg_rotation, mg_scale, WHITE);
+        DrawTextureEx(foreground, fg_pos, fg_rotation, fg_scale, WHITE);
+        DrawTextureEx(foreground, fg_pos_2, fg_rotation, fg_scale, WHITE);
         for (int i = 0; i < nebulaCount; i++)
         {
             DrawTextureRec(neb_tex, nebulae[i].rec, nebulae[i].pos, WHITE);
@@ -137,6 +161,8 @@ int main()
     }
     UnloadTexture(neb_tex);
     UnloadTexture(scarfy_tex);
-    UnloadTexture(background1);
+    UnloadTexture(background);
+    UnloadTexture(midground);
+    UnloadTexture(foreground);
     CloseWindow();
 }
