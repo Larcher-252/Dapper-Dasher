@@ -45,7 +45,8 @@ int main()
     Texture2D background1 = LoadTexture("textures/far-buildings.png");
     Vector2 bg1_pos{0.0f, 0.0f};
     const float bg1_rotation{0}, bg1_scale{2};
-    const int bg1_velocity = -10;
+    Vector2 bg1_pos_2{bg1_pos.x + background1.width * bg1_scale, 0.0f};
+    const int bg1_velocity = -20;
 
     // Hazard sprite params
     Texture2D neb_tex = LoadTexture("textures/12_nebula_spritesheet.png");
@@ -116,6 +117,7 @@ int main()
 
         // Location
         bg1_pos.x += bg1_velocity * dT;
+        bg1_pos_2.x = bg1_pos.x + background1.width * bg1_scale;
         for (int i = 0; i < nebulaCount; i++)
         {
             nebulae[i].pos.x += n_velocity * dT;
@@ -125,6 +127,7 @@ int main()
         BeginDrawing();
         ClearBackground(WHITE);
         DrawTextureEx(background1, bg1_pos, bg1_rotation, bg1_scale, WHITE);
+        DrawTextureEx(background1, bg1_pos_2, bg1_rotation, bg1_scale, WHITE);
         for (int i = 0; i < nebulaCount; i++)
         {
             DrawTextureRec(neb_tex, nebulae[i].rec, nebulae[i].pos, WHITE);
@@ -134,5 +137,6 @@ int main()
     }
     UnloadTexture(neb_tex);
     UnloadTexture(scarfy_tex);
+    UnloadTexture(background1);
     CloseWindow();
 }
