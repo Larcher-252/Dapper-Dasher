@@ -96,6 +96,7 @@ int main()
     const int gravity{1'000};
     float dT;
     float finishLine{nebulae[nebulaCount - 1].pos.x + 100};
+    bool collision{false};
 
     SetTargetFPS(60);
     while (!WindowShouldClose())
@@ -147,19 +148,40 @@ int main()
         scarfyData.pos.y += velocity * dT;
         finishLine += n_velocity * dT;
 
+        for (AnimData nebul : nebulae)
+        {
+            float pad{50};
+            Rectangle nebRec{
+                nebul.pos.x + pad,
+                nebul.pos.y + pad,
+                nebul.rec.width - 2*pad,
+                nebul.rec.height - 2*pad
+            };
+            Rectangle scarfyRec{
+                scarfyData.pos.x,
+                scarfyData.pos.y,
+                scarfyData.rec.width,
+                scarfyData.rec.height
+            };
+            if (CheckCollisionRecs(nebRec, scarfyRec)) {collision = true;}
+        }
+
         BeginDrawing();
         ClearBackground(WHITE);
-        DrawTextureEx(background, bg_pos, bg_rotation, bg_scale, WHITE);
-        DrawTextureEx(background, bg_pos_2, bg_rotation, bg_scale, WHITE);
-        DrawTextureEx(midground, mg_pos, mg_rotation, mg_scale, WHITE);
-        DrawTextureEx(midground, mg_pos_2, mg_rotation, mg_scale, WHITE);
-        DrawTextureEx(foreground, fg_pos, fg_rotation, fg_scale, WHITE);
-        DrawTextureEx(foreground, fg_pos_2, fg_rotation, fg_scale, WHITE);
-        for (int i = 0; i < nebulaCount; i++)
+        if (!collision)
         {
-            DrawTextureRec(neb_tex, nebulae[i].rec, nebulae[i].pos, WHITE);
+            DrawTextureEx(background, bg_pos, bg_rotation, bg_scale, WHITE);
+            DrawTextureEx(background, bg_pos_2, bg_rotation, bg_scale, WHITE);
+            DrawTextureEx(midground, mg_pos, mg_rotation, mg_scale, WHITE);
+            DrawTextureEx(midground, mg_pos_2, mg_rotation, mg_scale, WHITE);
+            DrawTextureEx(foreground, fg_pos, fg_rotation, fg_scale, WHITE);
+            DrawTextureEx(foreground, fg_pos_2, fg_rotation, fg_scale, WHITE);
+            for (int i = 0; i < nebulaCount; i++)
+            {
+                DrawTextureRec(neb_tex, nebulae[i].rec, nebulae[i].pos, WHITE);
+            }
+            DrawTextureRec(scarfy_tex, scarfyData.rec, scarfyData.pos, WHITE);
         }
-        DrawTextureRec(scarfy_tex, scarfyData.rec, scarfyData.pos, WHITE);
         EndDrawing();
     }
     UnloadTexture(neb_tex);
