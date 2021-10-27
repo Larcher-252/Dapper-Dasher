@@ -59,7 +59,7 @@ int main()
 
     // Hazard sprite params
     Texture2D neb_tex = LoadTexture("textures/12_nebula_spritesheet.png");
-    const int n_velocity{-400};
+    const int n_velocity{-200};
     const int nebulaCount{8};
     AnimData nebulae[nebulaCount];
     for (int i = 0; i < nebulaCount; i++)
@@ -168,7 +168,15 @@ int main()
 
         BeginDrawing();
         ClearBackground(WHITE);
-        if (!collision)
+        if (collision)
+        {
+            DrawText("You loose!", windowDimension[0] / 2, windowDimension[1] / 2, 40, RED);
+        }
+        else if (finishLine <= scarfyData.pos.x)
+        {
+            DrawText("You win!", windowDimension[0] / 2, windowDimension[1] / 2, 40, GREEN);
+        }
+        else
         {
             DrawTextureEx(background, bg_pos, bg_rotation, bg_scale, WHITE);
             DrawTextureEx(background, bg_pos_2, bg_rotation, bg_scale, WHITE);
